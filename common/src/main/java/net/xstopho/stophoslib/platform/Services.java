@@ -1,6 +1,6 @@
 package net.xstopho.stophoslib.platform;
 
-import net.xstopho.stophoslib.Constants;
+import net.xstopho.stophoslib.StophoLibConstants;
 import net.xstopho.stophoslib.platform.services.IPlatformHelper;
 
 import java.util.ServiceLoader;
@@ -13,7 +13,7 @@ public class Services {
         final T loadedService = ServiceLoader.load(clazz)
                 .findFirst()
                 .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
-        Constants.LOG.debug("Loaded {} for service {}", loadedService, clazz);
+        StophoLibConstants.LOG.debug("Loaded {} for service {}", loadedService, clazz);
         return loadedService;
     }
 }
