@@ -5,14 +5,19 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xstopho.stophoslib.StophoLibConstants;
 
 import java.util.LinkedList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = "stophoslib", bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = StophoLibConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeLootTableModifier implements LootTableModifier {
 
     private static final List<Modifier> lootModifier = new LinkedList<>();
+    private static final List<RangedModifier> rangedLootModifier = new LinkedList<>();
+    private record Modifier(ItemLike item, float amount, float chance, ResourceLocation lootTable) {}
+
+    private record RangedModifier(ItemLike item, float minAmount, float maxAmount, float chance, ResourceLocation lootTable) {}
 
     @Override
     public void addToPool(ItemLike item, float amount, float chance, ResourceLocation... lootTables) {
@@ -22,15 +27,22 @@ public class ForgeLootTableModifier implements LootTableModifier {
     }
 
     @Override
-    public void addToPool(ItemLike item, float amount, float chance, ResourceLocation lootTable) {
-        lootModifier.add(new Modifier(item, amount, chance, lootTable));
+    public void addToPool(ItemLike item, float minAmount, float maxAmount, float chance, ResourceLocation... lootTables) {
+        for (ResourceLocation lootTable : lootTables) {
+            rangedLootModifier.add(new RangedModifier(item, minAmount, maxAmount, chance, lootTable));
+        }
     }
 
     @SubscribeEvent
     public static void init(LootTableLoadEvent event) {
         for (Modifier modifier : lootModifier) {
-            if (event.getName().equals(modifier.getLootTable())) {
-                event.getTable().addPool(LootTableModifier.createLootPool(modifier.getItem(), modifier.getChance(), modifier.getAmount()).build());
+            if (event.getName().equals(modifier.lootTable())) {
+                event.getTable().addPool(LootTableModifier.createLootPool(modifier.item(), modifier.chance(), modifier.amount()).build());
+            }
+        }
+        for (RangedModifier modifier : rangedLootModifier) {
+            if (event.getName().equals(modifier.lootTable())) {
+                event.getTable().addPool(LootTableModifier.createLootPool(modifier.item(), modifier.chance(), modifier.minAmount(), modifier.maxAmount()).build());
             }
         }
     }
