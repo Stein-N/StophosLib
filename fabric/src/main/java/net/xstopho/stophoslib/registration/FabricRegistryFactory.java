@@ -2,6 +2,7 @@ package net.xstopho.stophoslib.registration;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
@@ -13,6 +14,11 @@ import java.util.function.Supplier;
 
 public class FabricRegistryFactory implements RegistryProvider.Factory {
     @Override
+    public <T> RegistryProvider<T> create(ResourceKey<? extends Registry<T>> resourceKey, String modId) {
+        return new Provider<>(resourceKey, modId);
+    }
+
+    @Override
     public <T> RegistryProvider<T> create(Registry<T> registry, String modId) {
         return new Provider<>(registry, modId);
     }
@@ -23,6 +29,17 @@ public class FabricRegistryFactory implements RegistryProvider.Factory {
 
         private final Set<RegistryObject<T>> entries = new LinkedHashSet<>();
         private final Set<RegistryObject<T>> entriesView = Collections.unmodifiableSet(entries);
+
+        @SuppressWarnings({"unchecked"})
+        private Provider(ResourceKey<? extends Registry<T>> key, String modId) {
+            this.modId = modId;
+
+            final var reg = BuiltInRegistries.REGISTRY.get(key.location());
+            if (reg == null) {
+                throw new RuntimeException("Registry with name " + key.location() + " was not found!");
+            }
+            registry = (Registry<T>) reg;
+        }
 
         private Provider(Registry<T> registry, String modId) {
             this.registry = registry;

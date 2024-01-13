@@ -16,17 +16,17 @@ import java.util.function.Supplier;
 
 public class NeoForgeRegistryFactory implements RegistryProvider.Factory {
     @Override
-    public <T> RegistryProvider<T> create(Registry<T> registry, String modID) {
-        final var modContainer = ModList.get().getModContainerById(modID);
-        if (modContainer.isEmpty()) throw new NullPointerException("Cannot find Mod Container for " + modID);
+    public <T> RegistryProvider<T> create(ResourceKey<? extends Registry<T>> resourceKey, String modId) {
+        final var modContainer = ModList.get().getModContainerById(modId);
+        if (modContainer.isEmpty()) throw new NullPointerException("Cannot find Mod Container for " + modId);
 
         final var container = modContainer.get();
         if (container instanceof FMLModContainer fmlModContainer) {
-            final var register = DeferredRegister.create(registry.key(), modID);
+            final var register = DeferredRegister.create(resourceKey, modId);
             register.register(Objects.requireNonNull(fmlModContainer.getEventBus()));
-            return new Provider<>(register, modID);
+            return new Provider<>(register, modId);
         } else {
-            throw new ClassCastException("The Container of the Mod " + modID + " is not a Forge one!");
+            throw new ClassCastException("The Container of the Mod " + modId + " is not a Forge one!");
         }
     }
 

@@ -1,12 +1,17 @@
 package net.xstopho.stophoslib.registration;
 
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.xstopho.stophoslib.platform.Services;
 
 import java.util.Collection;
 import java.util.function.Supplier;
 
 public interface RegistryProvider<T> {
+
+    static <T> RegistryProvider<T> get(ResourceKey<? extends Registry<T>> resourceKey, String modId) {
+        return Factory.INSTANCE.create(resourceKey, modId);
+    }
 
     static <T> RegistryProvider<T> get(Registry<T> registry, String modId) {
         return Factory.INSTANCE.create(registry, modId);
@@ -22,6 +27,10 @@ public interface RegistryProvider<T> {
 
         Factory INSTANCE = Services.load(Factory.class);
 
-        <T> RegistryProvider<T> create(Registry<T> registry, String modId);
+        <T> RegistryProvider<T> create(ResourceKey<? extends Registry<T>> resourceKey, String modId);
+        default <T> RegistryProvider<T> create(Registry<T> registry, String modId) {
+            return create(registry.key(), modId);
+        }
+
     }
 }

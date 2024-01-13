@@ -8,9 +8,9 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.xstopho.stophoslib.platform.Services;
+import net.xstopho.stophoslib.registration.RegistryObject;
 
 public interface LootTableModifier {
 
@@ -18,9 +18,9 @@ public interface LootTableModifier {
         return Services.load(LootTableModifier.class);
     }
 
-    void addToPool(ItemLike item, float amount, float chance, ResourceLocation... lootTables);
+    void addToPool(RegistryObject<Item> item, float amount, float chance, ResourceLocation... lootTables);
 
-    void addToPool(ItemLike item, float minAmount, float maxAmount, float chance, ResourceLocation... lootTables);
+    void addToPool(RegistryObject<Item> item, float minAmount, float maxAmount, float chance, ResourceLocation... lootTables);
 
     static LootPool.Builder createLootPool(ItemLike item, float chance, float amount) {
         return LootPool.lootPool()
