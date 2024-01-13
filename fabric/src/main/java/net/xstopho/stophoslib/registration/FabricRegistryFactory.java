@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 public class FabricRegistryFactory implements RegistryProvider.Factory {
     @Override
     public <T> RegistryProvider<T> create(Registry<T> registry, String modId) {
-        return null;
+        return new Provider<>(registry, modId);
     }
 
     private static class Provider<T> implements RegistryProvider<T> {
