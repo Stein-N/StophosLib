@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 public interface RegistryProvider<T> {
-
     static <T> RegistryProvider<T> get(ResourceKey<? extends Registry<T>> resourceKey, String modId) {
         return Factory.INSTANCE.create(resourceKey, modId);
     }

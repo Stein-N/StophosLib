@@ -15,9 +15,7 @@
     "icon": "icon.png",
     "environment": "*",
     "entrypoints": {
-        "main": [
-            "net.xstopho.stophoslib.StophosLib"
-        ]
+        "main": [ "net.xstopho.stophoslib.StophosLib" ]
     },
     "mixins": [
         "${mod_id}.mixins.json",
@@ -28,9 +26,6 @@
         "fabric-api": "*",
         "minecraft": ">=1.20",
         "java": ">=17"
-    },
-    "suggests": {
-        "another-mod": "*"
     },
     "custom": {
         "modmenu": {

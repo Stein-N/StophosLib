@@ -1,10 +1,18 @@
 base {
-    archivesName = "${mod_id}-fabric"
+    archivesName = "${mod_id}-fabric-${minecraft_version}"
 }
 
 architectury {
     platformSetupLoomIde()
     fabric()
+}
+
+dependencies {
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modApi "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+
+    compileOnly project(":common")
 }
 
 loom {
@@ -16,29 +24,24 @@ loom {
     }
 
     runs {
-        client {
-            client()
-            setConfigName("Fabric Client")
-        }
-        server {
-            server()
-            setConfigName("Fabric Server")
+        client { client(); setConfigName("Fabric Client") }
+        server { server(); setConfigName("Fabric Server") }
+        datagen {
+            inherit server
+            name "Fabric Datagen"
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+            vmArg "-Dfabric-api.datagen.modid=${mod_id}"
+
+            runDir "build/datagen"
         }
     }
-}
-
-dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
-
-    compileOnly project(":common")
 }
 
 tasks.withType(JavaCompile).configureEach {
     source(project(":common").sourceSets.main.allSource)
 }
 tasks.withType(Javadoc).configureEach {
-    options.addStringOption('Xdoclint:none', '-quiet')
     source(project(":common").sourceSets.main.allJava)
 }
 tasks.named("sourcesJar", Jar) {
@@ -47,4 +50,5 @@ tasks.named("sourcesJar", Jar) {
 
 processResources {
     from project(":common").sourceSets.main.resources
+    from project(":fabric").file("src/main/generated")
 }
