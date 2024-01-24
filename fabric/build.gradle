@@ -1,14 +1,15 @@
-base {
-    archivesName = "${mod_id}-fabric-${minecraft_version}"
+plugins {
+    id 'fabric-loom' version '1.5-SNAPSHOT'
 }
 
-architectury {
-    platformSetupLoomIde()
-    fabric()
+base {
+    archivesName = "${mod_id}-fabric"
 }
 
 dependencies {
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.officialMojangMappings()
+
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
 
@@ -16,24 +17,18 @@ dependencies {
 }
 
 loom {
-    if(project(":common").file("src/main/resources/${mod_id}.accesswidener").exists()){
+    if (project(":common").file("src/main/resources/${mod_id}.accesswidener").exists()) {
         accessWidenerPath.set(project(":common").file("src/main/resources/${mod_id}.accesswidener"))
     }
     mixin {
         defaultRefmapName.set("${mod_id}.refmap.json")
     }
-
     runs {
-        client { client(); setConfigName("Fabric Client") }
-        server { server(); setConfigName("Fabric Server") }
-        datagen {
-            inherit server
-            name "Fabric Datagen"
-            vmArg "-Dfabric-api.datagen"
-            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
-            vmArg "-Dfabric-api.datagen.modid=${mod_id}"
-
-            runDir "build/datagen"
+        client {
+            client()
+            setConfigName("Fabric Client")
+            ideConfigGenerated(true)
+            runDir("run")
         }
     }
 }
@@ -50,5 +45,4 @@ tasks.named("sourcesJar", Jar) {
 
 processResources {
     from project(":common").sourceSets.main.resources
-    from project(":fabric").file("src/main/generated")
 }
