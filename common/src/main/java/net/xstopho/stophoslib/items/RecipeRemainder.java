@@ -29,7 +29,10 @@ public class RecipeRemainder {
     }
 
     private interface LoaderMethods {
+        // Fabric implementation
         ItemStack getRecipeRemainder(ItemStack stack);
+
+        // Neo-/Forge implementation
         ItemStack getCraftingRemainingItem(ItemStack stack);
     }
 }
