@@ -2,8 +2,6 @@ package net.xstopho.stophoslib.modifier.loot_tables;
 
 import net.minecraft.resources.ResourceLocation;
 
-import javax.xml.stream.events.EntityReference;
-
 public class ArchaeologyLootTables {
 
     public static final ResourceLocation DESERT_PYRAMID = getLootTableId("desert_pyramid");

@@ -5,7 +5,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class MiningLevelUtil {
+public final class MiningLevelUtil {
 
     /**
      * For now only Vanilla Mining Levels are Supported

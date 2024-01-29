@@ -18,7 +18,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AreaUtil {
+public final class AreaUtil {
 
     public static void breakNeighborBlocks(Level level, Player player, int radius, int miningLevel) {
         if (miningLevel <= 0 || miningLevel >= 4) throw new IllegalArgumentException("Unexpected Mining Level (" + miningLevel + ")");
