@@ -22,3 +22,5 @@ classes/
 /forge/src/generated/
 /neoforge/src/generated/
 /.architectury-transformer/
+
+/common/src/main/resources/assets/

@@ -23,18 +23,18 @@ public final class AreaUtil {
     public static void breakNeighborBlocks(Level level, Player player, int radius, int miningLevel) {
         if (miningLevel <= 0 || miningLevel >= 4) throw new IllegalArgumentException("Unexpected Mining Level (" + miningLevel + ")");
         if (!level.isClientSide) {
-            ItemStack stack = player.getMainHandItem();
-            boolean silkTouch = stack.getEnchantmentTags().toString().contains("silktouch");
+            ItemStack itemStack = player.getMainHandItem();
+            boolean silkTouch = itemStack.getEnchantmentTags().toString().contains("silktouch");
 
             List<BlockPos> blocks = calcRay(level, player, radius);
-            for (BlockPos pos : blocks) {
-                BlockState state = level.getBlockState(pos);
-                Block block = state.getBlock();
+            for (BlockPos blockPos : blocks) {
+                BlockState blockState = level.getBlockState(blockPos);
+                Block block = blockState.getBlock();
 
-                if (miningLevel >= MiningLevelUtil.getMiningLevel(state) && isBlockMineable(stack, state) && !hasBlockEntity(block, state)) {
-                    level.destroyBlock(pos, false);
-                    if (silkTouch && !(block instanceof AmethystBlock)) spawnItem(level, pos, block);
-                    else Block.dropResources(state, level, pos, null, player, stack);
+                if (miningLevel >= MiningLevelUtil.getMiningLevel(blockState) && isBlockMineable(itemStack, blockState) && !hasBlockEntity(block, blockState)) {
+                    level.destroyBlock(blockPos, false);
+                    if (silkTouch && !(block instanceof AmethystBlock)) spawnItem(level, blockPos, block);
+                    else Block.dropResources(blockState, level, blockPos, null, player, itemStack);
                 }
             }
         }
