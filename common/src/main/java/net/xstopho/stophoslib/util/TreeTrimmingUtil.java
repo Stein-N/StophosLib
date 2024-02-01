@@ -1,18 +1,14 @@
 package net.xstopho.stophoslib.util;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class TreeTrimmingUtil {
-
-    public static final List<Block> allowedBlocks = List.of(Blocks.ACACIA_LOG, Blocks.BIRCH_LOG, Blocks.CHERRY_LOG,
-            Blocks.JUNGLE_LOG, Blocks.MANGROVE_LOG, Blocks.CHERRY_LOG, Blocks.DARK_OAK_LOG, Blocks.OAK_LOG, Blocks.SPRUCE_LOG);
 
     private static final List<BlockPos> visited = new ArrayList<>();
     private static Level constantLevel;
@@ -70,6 +66,6 @@ public class TreeTrimmingUtil {
     }
 
     public static boolean isBlockAllowed(BlockPos pos) {
-        return allowedBlocks.contains(constantLevel.getBlockState(pos).getBlock());
+        return constantLevel.getBlockState(pos).is(BlockTags.LOGS);
     }
 }

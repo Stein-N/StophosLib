@@ -1,6 +1,7 @@
 package net.xstopho.stophoslib.items;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -75,17 +76,17 @@ public class ExcavatorItem {
         @Override
         public final boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player) {
 
-            if (isAllowedBlock(level, pos)) {
+            if (level.getBlockState(pos).is(BlockTags.LOGS)) {
                 BlockPos lastPos = TreeTrimmingUtil.getLastPossibleBlock(level, pos);
                 if (lastPos != null) level.destroyBlock(lastPos, true);
+
+                ItemStack stack = player.getMainHandItem();
+                stack.setDamageValue(stack.getDamageValue() + 1);
+
                 return false;
             }
 
             return true;
-        }
-
-        boolean isAllowedBlock(Level level, BlockPos pos) {
-            return TreeTrimmingUtil.allowedBlocks.contains(level.getBlockState(pos).getBlock());
         }
     }
 }
