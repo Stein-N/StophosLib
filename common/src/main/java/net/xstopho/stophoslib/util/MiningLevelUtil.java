@@ -8,13 +8,13 @@ import net.minecraft.world.level.block.state.BlockState;
 public final class MiningLevelUtil {
 
     /**
-     * For now only Vanilla Mining Levels are Supported
+     * For now only Vanilla Mining Levels are Supported<br>
+     * By default it returns the Diamond Mining Level
      */
     public static int getMiningLevel(BlockState state) {
         if (state.is(BlockTags.NEEDS_STONE_TOOL)) return 1;
         if (state.is(BlockTags.NEEDS_IRON_TOOL)) return 2;
-        if (state.is(BlockTags.NEEDS_DIAMOND_TOOL)) return 3;
-        return 0;
+        return 3;
     }
 
     /**

@@ -2,6 +2,7 @@ package net.xstopho.stophoslib.items;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -78,15 +79,23 @@ public class ExcavatorItem {
 
             if (level.getBlockState(pos).is(BlockTags.LOGS)) {
                 BlockPos lastPos = TreeTrimmingUtil.getLastPossibleBlock(level, pos);
-                if (lastPos != null) level.destroyBlock(lastPos, true);
+
+                level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(getItem(level, lastPos))));
+                level.destroyBlock(lastPos, false);
 
                 ItemStack stack = player.getMainHandItem();
                 stack.setDamageValue(stack.getDamageValue() + 1);
+
+                if (stack.getDamageValue() >= stack.getMaxDamage()) stack.shrink(1);
 
                 return false;
             }
 
             return true;
+        }
+
+        final Item getItem(Level level, BlockPos pos) {
+            return level.getBlockState(pos).getBlock().asItem();
         }
     }
 }

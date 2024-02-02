@@ -20,7 +20,13 @@ public class TreeTrimmingUtil {
         return lastPos;
     }
 
+    /**
+     * Currently incompatible with Tree's that grow "downwards"
+     */
     static BlockPos scanTree(BlockPos pos) {
+        if (visited.contains(pos)) return pos;
+
+        visited.add(pos);
 
         if (hasBlockAbove(pos)) pos = scanTree(pos.above());
 
@@ -36,20 +42,18 @@ public class TreeTrimmingUtil {
     }
 
     static boolean hasDiagonalNeighbour(BlockPos pos) {
-        return pos != iterateBlocks(pos, 1);
+        return !pos.equals(iterateBlocks(pos, 1));
     }
 
     static boolean hasNeighbour(BlockPos pos) {
-        return pos != iterateBlocks(pos, 0);
+        return !pos.equals(iterateBlocks(pos, 0));
     }
 
     static BlockPos getDiagonalNeighbour(BlockPos pos) {
-        visited.add(pos);
         return iterateBlocks(pos, 1);
     }
 
     static BlockPos getNeighbour(BlockPos pos) {
-        visited.add(pos);
         return iterateBlocks(pos, 0);
     }
 
