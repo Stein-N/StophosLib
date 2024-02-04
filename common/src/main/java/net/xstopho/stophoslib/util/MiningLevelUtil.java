@@ -2,8 +2,12 @@ package net.xstopho.stophoslib.util;
 
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.xstopho.stophoslib.items.RecipeRemainder;
 
 public final class MiningLevelUtil {
 
@@ -14,7 +18,8 @@ public final class MiningLevelUtil {
     public static int getMiningLevel(BlockState state) {
         if (state.is(BlockTags.NEEDS_STONE_TOOL)) return 1;
         if (state.is(BlockTags.NEEDS_IRON_TOOL)) return 2;
-        return 3;
+        if (state.is(BlockTags.NEEDS_DIAMOND_TOOL)) return 3;
+        return 0;
     }
 
     /**
@@ -29,5 +34,18 @@ public final class MiningLevelUtil {
             case 3 -> BlockTags.NEEDS_DIAMOND_TOOL;
             default -> throw new IllegalStateException("Unexpected value: " + miningLevel);
         };
+    }
+
+    public static int getToolTier(Item item) {
+        if (item instanceof DiggerItem) {
+            return ((DiggerItem) item).getTier().getLevel();
+        } else throw new IllegalArgumentException("The given Item isn't a Tool Item!");
+    }
+
+    public static int getToolTier(ItemStack stack) {
+        Item item = stack.getItem();
+        if (item instanceof DiggerItem) {
+            return ((DiggerItem) item).getTier().getLevel();
+        } else throw new IllegalArgumentException("The given Item isn't a Tool Item!");
     }
 }
