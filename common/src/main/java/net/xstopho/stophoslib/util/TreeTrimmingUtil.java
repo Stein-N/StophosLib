@@ -11,65 +11,66 @@ import java.util.List;
 public class TreeTrimmingUtil {
 
     private static final List<BlockPos> visited = new ArrayList<>();
-    private static Level constantLevel;
 
-    public static BlockPos getLastPossibleBlock(Level level, BlockPos pos) {
-        constantLevel = level;
-        BlockPos lastPos = scanTree(pos);
+    public static BlockPos getLastBlock(Level level, BlockPos pos) {
         visited.clear();
-        return lastPos;
+        return scanTree(level, pos);
     }
 
-    /**
-     * Currently incompatible with Tree's that grow "downwards"
-     */
-    static BlockPos scanTree(BlockPos pos) {
-        if (visited.contains(pos)) return pos;
+    static BlockPos scanTree(Level level, BlockPos pos) {
+        if (!notVisited(level, pos)) return pos;
 
         visited.add(pos);
 
-        if (hasBlockAbove(pos)) pos = scanTree(pos.above());
+        if (hasBlockAbove(level, pos)) pos = scanTree(level, getBlockAbove(level, pos));
 
-        if (hasDiagonalNeighbour(pos)) pos = scanTree(getDiagonalNeighbour(pos));
+        if (hasDiagonalNeighbour(level, pos)) pos = scanTree(level, getDiagonalNeighbour(level, pos));
 
-        if (hasNeighbour(pos)) pos = scanTree(getNeighbour(pos));
+        if (hasNeighbour(level, pos)) pos = scanTree(level, getNeighbour(level, pos));
 
         return pos;
     }
 
-    static boolean hasBlockAbove(BlockPos pos) {
-        return isBlockAllowed(pos.above());
+    static BlockPos getBlockAbove(Level level, BlockPos pos) {
+        if (notVisited(level, pos.above())) return pos.above();
+        return pos;
     }
 
-    static boolean hasDiagonalNeighbour(BlockPos pos) {
-        return !pos.equals(iterateBlocks(pos, 1));
+    static BlockPos getDiagonalNeighbour(Level level, BlockPos pos) {
+        return iterateBlocks(level, pos, 1);
     }
 
-    static boolean hasNeighbour(BlockPos pos) {
-        return !pos.equals(iterateBlocks(pos, 0));
+    static BlockPos getNeighbour(Level level, BlockPos pos) {
+        return iterateBlocks(level, pos, 0);
     }
 
-    static BlockPos getDiagonalNeighbour(BlockPos pos) {
-        return iterateBlocks(pos, 1);
+    static boolean hasBlockAbove(Level level, BlockPos pos) {
+        return notVisited(level, pos.above());
     }
 
-    static BlockPos getNeighbour(BlockPos pos) {
-        return iterateBlocks(pos, 0);
+    static boolean hasDiagonalNeighbour(Level level, BlockPos pos) {
+        return !pos.equals(iterateBlocks(level, pos, 1));
     }
 
-    static BlockPos iterateBlocks(BlockPos originPos, int yOffset) {
+    static boolean hasNeighbour(Level level, BlockPos pos) {
+        return !pos.equals(iterateBlocks(level, pos, 0));
+    }
+
+    static BlockPos iterateBlocks(Level level, BlockPos pos, int yOffset) {
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
-                BlockPos checkBlock = new BlockPos(originPos.getX() + x, originPos.getY() + yOffset, originPos.getZ() + z);
-                if (isBlockAllowed(checkBlock) && !visited.contains(checkBlock)) {
-                    return checkBlock;
-                }
+                BlockPos check = new BlockPos(pos.getX() + x, pos.getY() + yOffset, pos.getZ() + z);
+                if (notVisited(level, check)) return check;
             }
         }
-        return originPos;
+        return pos;
     }
 
-    public static boolean isBlockAllowed(BlockPos pos) {
-        return constantLevel.getBlockState(pos).is(BlockTags.LOGS);
+    static boolean notVisited(Level level, BlockPos pos) {
+        return isAllowedBlock(level, pos) && !visited.contains(pos);
+    }
+
+    static boolean isAllowedBlock(Level level, BlockPos pos) {
+        return level.getBlockState(pos).is(BlockTags.LOGS);
     }
 }
