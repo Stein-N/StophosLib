@@ -1,0 +1,27 @@
+{
+    "schemaVersion": 1,
+    "id": "testmod",
+    "version": "0.0.1",
+    "name": "Testmod",
+    "description": "Test Mod for Stophos Lib",
+    "authors": [
+        "xStopho"
+    ],
+    "contact": {
+        "homepage": "https://fabricmc.net/",
+        "sources": "https://github.com/FabricMC/fabric-example-mod"
+    },
+    "license": "${mod_license}",
+    "icon": "icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [ "net.xstopho.stophoslib_testmod.Testmod" ]
+    },
+    "depends": {
+        "fabricloader": ">=0.15",
+        "fabric-api": "*",
+        "minecraft": ">=1.20",
+        "java": ">=17"
+    }
+}
+  

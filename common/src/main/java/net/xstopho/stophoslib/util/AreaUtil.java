@@ -33,8 +33,10 @@ public final class AreaUtil {
 
                 if (miningLevel >= MiningLevelUtil.getMiningLevel(blockState) && isBlockMineable(itemStack, blockState) && !hasBlockEntity(block, blockState)) {
                     level.destroyBlock(blockPos, false);
-                    if (silkTouch && !(block instanceof AmethystBlock)) spawnItem(level, blockPos, block);
-                    else Block.dropResources(blockState, level, blockPos, null, player, itemStack);
+                    if (!player.isCreative()) {
+                        if (silkTouch && !(block instanceof AmethystBlock)) spawnItem(level, blockPos, block);
+                        else Block.dropResources(blockState, level, blockPos, null, player, itemStack);
+                    }
                 }
             }
         }

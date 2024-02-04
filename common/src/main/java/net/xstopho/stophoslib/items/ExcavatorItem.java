@@ -80,7 +80,9 @@ public class ExcavatorItem {
             if (level.getBlockState(pos).is(BlockTags.LOGS)) {
                 BlockPos lastPos = TreeTrimmingUtil.getLastBlock(level, pos);
 
-                level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(getItem(level, lastPos))));
+                if (!player.isCreative()) {
+                    level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(getItem(level, lastPos))));
+                }
                 level.destroyBlock(lastPos, false);
 
                 ItemStack stack = player.getMainHandItem();

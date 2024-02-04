@@ -16,6 +16,13 @@ dependencies {
     compileOnly project(":common")
 }
 
+sourceSets {
+    testmod {
+        runtimeClasspath += main.runtimeClasspath;
+        compileClasspath += main.compileClasspath;
+    }
+}
+
 loom {
     if (project(":common").file("src/main/resources/${mod_id}.accesswidener").exists()) {
         accessWidenerPath.set(project(":common").file("src/main/resources/${mod_id}.accesswidener"))
@@ -24,11 +31,12 @@ loom {
         defaultRefmapName.set("${mod_id}.refmap.json")
     }
     runs {
-        client {
+        testmodClient {
             client()
-            setConfigName("Fabric Client")
+            setConfigName("Testmod Client")
             ideConfigGenerated(true)
             runDir("run")
+            source sourceSets.testmod
         }
     }
 }
